@@ -1,5 +1,5 @@
 #define analysisClass_cxx
-#include "CMSDIJET/DijetRootTreeAnalyzer/include/analysisClass.h"
+#include "analysisClass.h"
 #include <TH2.h>
 #include <TH1F.h>
 #include <TF1.h>
@@ -89,8 +89,6 @@ bool isNewonOldValidJetTight(const float& Eta_ak4, const float& nhf, const float
     if( fabs(Eta_ak4) < 2.6 ){
       idL = (nhf*JecCorr < 0.9 && nemf*JecCorr < 0.9  && (chMult+neMult) >1 && muF*JecCorr < 0.8 && chMult > 0 && chf*JecCorr > 0 && cemF*JecCorr < 0.8) ;
     }
-    if(fabs((nhf*JecCorr + nemf*JecCorr +chf*JecCorr+cemF*JecCorr)-1)>0.1)cout<<"Problem with the energy fraction nhfCorrect="<<nhf*JecCorr<<" emfCorr="<<nemf*JecCorr<<" chfCorrect="<<chf*JecCorr<<" cemFCorrect="<<cemF*JecCorr<<" SumCorr "<<nhf*JecCorr + nemf*JecCorr+chf*JecCorr+cemF*JecCorr<<" Sum Not corr "<<nhf+nemf+cemF+chf<<endl;
-
     return idL;   
 }
 
@@ -234,6 +232,7 @@ void analysisClass::Loop()
    int testcount = 0 ;
    int Is_PU = 0 ;
    int is_hot_area = 0 ;
+   int nprobfrac = 0 ;
    /////////initialize variables
 
    Long64_t nentries = fChain->GetEntriesFast();//10000;//fChain->GetEntriesFast();//10000;//10000;//1000000; //
@@ -557,90 +556,19 @@ void analysisClass::Loop()
 		continue;}
 	      bool keep_event = true ; 
 	      //2017 hot zone cleaning 
-	      if(isData){
-		EtaPhiJet_beforehot->Fill(ak4j1.Eta(),ak4j1.Phi());
-		EtaPhiJet_beforehot->Fill(ak4j2.Eta(),ak4j2.Phi());
-	      }
-		//cleaning needed for 2017, have to be removed for 2016 
-		if (isData && (h_hotjets.GetBinContent(h_hotjets.FindBin(ak4j1.Eta(), ak4j1.Phi())) >= 10 || h_hotjets.GetBinContent(h_hotjets.FindBin(ak4j1.Eta(), ak4j1.Phi())) >= 10 )) keep_event=false; //
-		if(!keep_event){      
-		  is_hot_area++;
-		  continue;
-		}
-		//SB: Need to change the hardcoded hotzone!
-		if (isData && (ak4j1.Eta() >= 2.853 &&  ak4j1.Eta() <= 2.964 && ak4j1.Phi()>= 0.6 && ak4j1.Phi() <= 1.)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j1.Eta() >= 2.853 &&  ak4j1.Eta() <= 2.964 && ak4j1.Phi()>= 2.2 && ak4j1.Phi() <= 2.6)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j1.Eta() >= 2.853 &&  ak4j1.Eta() <= 2.964 && ak4j1.Phi()>= -2.6 && ak4j1.Phi() <= -2.2)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j1.Eta() >= 2.853 &&  ak4j1.Eta() <= 2.964 && ak4j1.Phi()>= 2.9 && ak4j1.Phi() <= 3.1)){
-		  is_hot_area++;
-		  continue;
-		}
-		
-		if (isData && (ak4j1.Eta() >= -2.964 &&  ak4j1.Eta() <= -2.853 && ak4j1.Phi()>= -2.6 && ak4j1.Phi() <= -2.2)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j1.Eta() >= -2.964 &&  ak4j1.Eta() <= -2.853 && ak4j1.Phi()>= 0.6 && ak4j1.Phi() <= 1.)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j1.Eta() >= -2.964 &&  ak4j1.Eta() <= -2.853 && ak4j1.Phi()>= 2.2 && ak4j1.Phi() <= 2.6)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j1.Eta() >= -2.964 &&  ak4j1.Eta() <= -2.853 && ak4j1.Phi()>= 2.9 && ak4j1.Phi() <= 3.1)){
-		  is_hot_area++;
-		  continue;
-		}
-		
-		// jet2
-		if (isData && (ak4j2.Eta() >= 2.853 &&  ak4j2.Eta() <= 2.964 && ak4j2.Phi()>= 0.6 && ak4j2.Phi() <= 1.)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j2.Eta() >= 2.853 &&  ak4j2.Eta() <= 2.964 && ak4j2.Phi()>= 2.2 && ak4j2.Phi() <= 2.6)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j2.Eta() >= 2.853 &&  ak4j2.Eta() <= 2.964 && ak4j2.Phi()>= -2.6 && ak4j2.Phi() <= -2.2)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j2.Eta() >= 2.853 &&  ak4j2.Eta() <= 2.964 && ak4j2.Phi()>= 2.9 && ak4j2.Phi() <= 3.1)){
-		  is_hot_area++;
-		  continue;
-		}
-		
-		if (isData && (ak4j2.Eta() >= -2.964 &&  ak4j2.Eta() <= -2.853 && ak4j2.Phi()>= -2.6 && ak4j2.Phi() <= -2.2)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j2.Eta() >= -2.964 &&  ak4j2.Eta() <= -2.853 && ak4j2.Phi()>= 0.6 && ak4j2.Phi() <= 1.)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j2.Eta() >= -2.964 &&  ak4j2.Eta() <= -2.853 && ak4j2.Phi()>= 2.2 && ak4j2.Phi() <= 2.6)){
-		  is_hot_area++;
-		  continue;
-		}
-		if (isData && (ak4j2.Eta() >= -2.964 &&  ak4j2.Eta() <= -2.853 && ak4j2.Phi()>= 2.9 && ak4j2.Phi() <= 3.1)){
-		  is_hot_area++;
-		  continue;
-		}
-		
-		if(isData){
-		  EtaPhiJet_afterhot->Fill(ak4j1.Eta(),ak4j1.Phi());
-		  EtaPhiJet_afterhot->Fill(ak4j2.Eta(),ak4j2.Phi());
-		}
+	      EtaPhiJet_beforehot->Fill(ak4j1.Eta(),ak4j1.Phi());
+              EtaPhiJet_beforehot->Fill(ak4j2.Eta(),ak4j2.Phi());
+
+	     if (h_hotjets.GetBinContent(h_hotjets.FindBin(ak4j1.Eta(), ak4j1.Phi())) > 0) keep_event=false; //
+	     if (h_hotjets.GetBinContent(h_hotjets.FindBin(ak4j2.Eta(), ak4j2.Phi())) > 0) keep_event=false; //
+	     if(!keep_event){
+		is_hot_area++;
+		continue;
+	     }
+     
+         	EtaPhiJet_afterhot->Fill(ak4j1.Eta(),ak4j1.Phi());
+         	EtaPhiJet_afterhot->Fill(ak4j2.Eta(),ak4j2.Phi());
+
 		//store all corrected jets of the events 
 		for(int i = 0 ; i < int(no_jets_ak4 - nfakejet); i++){
 		  if(!isData && jetPtGenAK4->at(sortedJetIdx[0]) > 0.){ hasgen = 1;}
@@ -886,6 +814,17 @@ void analysisClass::Loop()
 		      fillVariableWithValue( "chargedMult_j1", chMultAK4->at(sortedJetIdx[leadjetidx]));
 		      fillVariableWithValue( "neutrMult_j1", neMultAK4->at(sortedJetIdx[leadjetidx]));
 		      fillVariableWithValue( "photonMult_j1", phoMultAK4->at(sortedJetIdx[leadjetidx]));
+			double JecCorr = jetJecAK4->at(sortedJetIdx[leadjetidx]);
+			double nhf = jetNhfAK4->at(sortedJetIdx[leadjetidx]);
+			double nemf = jetNemfAK4->at(sortedJetIdx[leadjetidx]);
+			double chf = jetChfAK4->at(sortedJetIdx[leadjetidx]);
+			double cemF = jetCemfAK4->at(sortedJetIdx[leadjetidx]);
+			std::cout<<" nb of selected event " << nselectedevent<<std::endl;
+			 if(fabs((nhf*JecCorr + nemf*JecCorr +chf*JecCorr+cemF*JecCorr)-1)>0.1)
+			{
+				nprobfrac++;
+				cout<<"Problem with the energy fraction nhfCorrect="<<nhf*JecCorr<<" emfCorr="<<nemf*JecCorr<<" chfCorrect="<<chf*JecCorr<<" cemFCorrect="<<cemF*JecCorr<<" SumCorr "<<nhf*JecCorr + nemf*JecCorr+chf*JecCorr+cemF*JecCorr<<" Sum Not corr "<<nhf+nemf+cemF+chf<<endl;
+			}
 		      if(!isData){
 			fillVariableWithValue( "jetJerAK4_j1", jerFactors[sortedJetIdx[leadjetidx]] );
 		      }
@@ -1064,6 +1003,7 @@ void analysisClass::Loop()
    std::cout << std::endl;
    
    std::cout<<" nb of selected event " << nselectedevent<<std::endl;
+   std::cout<<" n prob frac " << nprobfrac <<std::endl;
    
    
    std::cout << "analysisClass::Loop() ends" <<std::endl; 
