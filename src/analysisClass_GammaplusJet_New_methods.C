@@ -1010,6 +1010,26 @@ void analysisClass::Loop()
        fillVariableWithValue( "chargedMult_j1", chMultAK4->at(sortedJetIdx[0]));
        fillVariableWithValue( "neutrMult_j1", neMultAK4->at(sortedJetIdx[0]));
        fillVariableWithValue( "photonMult_j1", phoMultAK4->at(sortedJetIdx[0]));
+        //std::cout<<"neutrHadEnFrac_j1"      << jetNhfAK4->at(sortedJetIdx[0] )   <<std::endl;
+        //std::cout<<"chargedHadEnFrac_j1"    << jetChfAK4->at(sortedJetIdx[0] ) <<std::endl;
+        //std::cout<<"photonEnFrac_j1"        << jetPhfAK4->at(sortedJetIdx[0] )     <<std::endl;
+        //std::cout<<"eleEnFract_j1"          << jetElfAK4->at(sortedJetIdx[0] )       <<std::endl;
+        //std::cout<<"muEnFract_j1"           << jetMufAK4->at(sortedJetIdx[0] )        <<std::endl;
+        //std::cout<<"neutrElectromFrac_j1"   << jetNemfAK4->at(sortedJetIdx[0]) <<std::endl;
+        //std::cout<<"chargedElectromFrac_j1" << jetCemfAK4->at(sortedJetIdx[0])<<std::endl;
+        //std::cout<<"chargedMult_j1"<< chMultAK4->at(sortedJetIdx[0])<<std::endl;
+        //std::cout<<"neutrMult_j1"  << neMultAK4->at(sortedJetIdx[0])<<std::endl;
+        //std::cout<<"photonMult_j1" << phoMultAK4->at(sortedJetIdx[0])<<std::endl;
+	double JecCorr = 1;
+	double nhf = jetNhfAK4->at(sortedJetIdx[0]);
+	double nemf = jetNemfAK4->at(sortedJetIdx[0]);
+	double chf = jetChfAK4->at(sortedJetIdx[0]);
+	double cemF = jetCemfAK4->at(sortedJetIdx[0]);
+        std::cout<<" nb of selected event " << nselectedevent<<std::endl;
+         if(fabs((nhf*JecCorr + nemf*JecCorr +chf*JecCorr+cemF*JecCorr)-1)>0.1)
+	{
+		cout<<"Problem with the energy fraction nhfCorrect="<<nhf*JecCorr<<" emfCorr="<<nemf*JecCorr<<" chfCorrect="<<chf*JecCorr<<" cemFCorrect="<<cemF*JecCorr<<" SumCorr "<<nhf*JecCorr + nemf*JecCorr+chf*JecCorr+cemF*JecCorr<<" Sum Not corr "<<nhf+nemf+cemF+chf<<endl;
+	}
        if(!isData){
        
        fillVariableWithValue( "jetJerAK4_j1", jerFactors[sortedJetIdx[0]] );
