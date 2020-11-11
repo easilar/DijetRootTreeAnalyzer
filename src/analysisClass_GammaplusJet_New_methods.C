@@ -279,7 +279,7 @@ void analysisClass::Loop()
      if(!isData){
          SumWeight->Fill(0.,weight);
          genweight = weight;
-         trueInteractionall = npu->at(1);
+         trueInteractionall = npu->at(0);
          PUvariable->Fill();
      }else{
           SumWeight->Fill(0.,1);
